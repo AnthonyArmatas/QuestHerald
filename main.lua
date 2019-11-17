@@ -24,7 +24,6 @@ function QuestHerald:OnInitialize()
     QuestHerald:RegisterChatCommand("disableObjective", "DisableObj")
     QuestHerald:RegisterChatCommand("enableDescription", "EnableDes")
     QuestHerald:RegisterChatCommand("disableDescription", "DisableDes")
-    QuestHerald:RegisterChatCommand("getLoc", "GetLoc")
 end
 
 function QuestHerald:OnEnable()
@@ -155,12 +154,6 @@ function QuestHerald:DisableDes(input)
 	checkPDescription = false
 	print("Playing Description is set to" .. tostring(checkPDescription))
 end
-
--- function QuestHerald:GetLoc(input)
-	-- local zoneName = GetZoneText();
-	-- message(zoneName);
--- end
-
 
 
 ---------------------------------------------------------------------
