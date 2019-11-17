@@ -49,7 +49,10 @@ end
 function QuestHerald:QUEST_FINISHED()
 	--print("Hit QUEST_DETAIL")
 	--print(handle)
-	StopSound(handle)
+	if handle ~= nil then
+		StopSound(handle)
+	end
+	
 	self:CancelAllTimers()
 	--print("StopSound: ")
 
@@ -59,7 +62,10 @@ end
 -- stops the current mp3 playing and cancells the 
 -- timer which would play the objective
 function QuestHerald:UNIT_QUEST_LOG_CHANGED()
-	StopSound(handle)
+	if handle ~= nil then
+		StopSound(handle)
+	end
+	
 	self:CancelAllTimers()
 end
 
