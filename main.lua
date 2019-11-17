@@ -33,6 +33,9 @@ function QuestHerald:OnEnable()
 	QuestHerald:RegisterEvent("QUEST_DETAIL")
 	QuestHerald:RegisterEvent("QUEST_FINISHED")
 	QuestHerald:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
+	-- QuestHerald:RegisterEvent("QUEST_PROGRESS")
+	QuestHerald:RegisterEvent("QUEST_COMPLETE")
+	QuestHerald:RegisterEvent("QUEST_TURNED_IN")
 	--self:Print("Goodbye World!")
  end
 
@@ -42,6 +45,35 @@ function QuestHerald:QUEST_DETAIL(event)
    questInfo = GetQuestID()
    self:playSounds(questInfo, checkPlayObjective, checkPDescription)
 end
+
+
+-- The words spoken when the play hits continue and plays the turn in quest text.
+function QuestHerald:QUEST_TURNED_IN(event)
+   -- TODO: Implement functionality and add voice acting to this part eventually.
+   --print("Hit QUEST_TURNED_IN")
+   	if handle ~= nil then
+		StopSound(handle)
+	end
+	
+	self:CancelAllTimers()
+
+end
+
+-- The words spoken when the play hits continue and plays the turn in quest text.
+function QuestHerald:QUEST_COMPLETE(event)
+   -- TODO: Implement functionality and add voice acting to this part eventually.
+   --print("Hit QUEST_COMPLETE")
+   questInfo = GetQuestID()
+   print(questInfo .. "questInfo")
+   self:playTurnInSound(questInfo)
+
+end
+
+-- -- The words spoken in the progress between accepted and turning in a quest 
+-- function QuestHerald:QUEST_PROGRESS(event)
+   -- -- TODO: Implement functionality and add voice acting to this part eventually.
+   -- -- print("Hit QUEST_PROGRESS")
+-- end
 
 -- Used when a quest is closed or accepted
 -- stops the current mp3 playing and cancells the 
@@ -69,7 +101,6 @@ function QuestHerald:UNIT_QUEST_LOG_CHANGED()
 	self:CancelAllTimers()
 end
 
-
 function QuestHerald:playSoundObjective(questId)
 	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .. "_Objective.mp3")
 
@@ -89,10 +120,10 @@ end
 
 function QuestHerald:playWholeQuest(questId)
 	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .."_Description.mp3")
-	
-	self:ScheduleTimer("playSoundObjective", questTable[questId .."_Description.mp3"], questId)
 
-	if rtnval == nil then
+	if rtnval ~= nil then
+		self:ScheduleTimer("playSoundObjective", questTable[questId .."_Description.mp3"], questId)
+	else
 		print('The quest ' .. questId .. " has yet to be implimented" )
 	end
 end
@@ -110,6 +141,16 @@ function QuestHerald:playSounds(questId, playObjective, playDescription)
 			 self:playSoundDescription(questId)
 		 end
 	 end
+end
+
+function QuestHerald:playTurnInSound(questId)
+	zoneName = GetZoneText();
+	zoneName = zoneName:gsub("%s+", "")
+	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .."_TurnIn.mp3")
+	
+	if rtnval == nil then
+		print('The quest ' .. questId .. " has yet to be implimented" )
+	end
 end
 
 ---------------------------------------------------------------------
