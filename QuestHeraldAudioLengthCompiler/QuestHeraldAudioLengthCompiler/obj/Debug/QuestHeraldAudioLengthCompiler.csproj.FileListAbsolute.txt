@@ -1,9 +1,0 @@
-F:\Workshop\QuestHerald\QuestHeraldAudioLengthCompiler\QuestHeraldAudioLengthCompiler\bin\Debug\QuestHeraldAudioLengthCompiler.exe.config
-F:\Workshop\QuestHerald\QuestHeraldAudioLengthCompiler\QuestHeraldAudioLengthCompiler\bin\Debug\QuestHeraldAudioLengthCompiler.exe
-F:\Workshop\QuestHerald\QuestHeraldAudioLengthCompiler\QuestHeraldAudioLengthCompiler\bin\Debug\QuestHeraldAudioLengthCompiler.pdb
-F:\Workshop\QuestHerald\QuestHeraldAudioLengthCompiler\QuestHeraldAudioLengthCompiler\obj\Debug\QuestHeraldAudioLengthCompiler.csprojResolveAssemblyReference.cache
-F:\Workshop\QuestHerald\QuestHeraldAudioLengthCompiler\QuestHeraldAudioLengthCompiler\obj\Debug\QuestHeraldAudioLengthCompiler.exe
-F:\Workshop\QuestHerald\QuestHeraldAudioLengthCompiler\QuestHeraldAudioLengthCompiler\obj\Debug\QuestHeraldAudioLengthCompiler.pdb
-F:\Workshop\QuestHerald\QuestHeraldAudioLengthCompiler\QuestHeraldAudioLengthCompiler\bin\Debug\policy.2.0.taglib-sharp.dll
-F:\Workshop\QuestHerald\QuestHeraldAudioLengthCompiler\QuestHeraldAudioLengthCompiler\bin\Debug\taglib-sharp.dll
-F:\Workshop\QuestHerald\QuestHeraldAudioLengthCompiler\QuestHeraldAudioLengthCompiler\bin\Debug\policy.2.0.taglib-sharp.config
