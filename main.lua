@@ -107,11 +107,9 @@ end
 
 function QuestHerald:playSoundObjective(questId)
 	soundStoped = false
-	print("calling playSoundObjective")
 	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .. "_Objective.mp3")
-	print("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .. "_Objective.mp3")
+
 	if rtnval == nil and soundStoped ~= true then
-		print("rtnval2 " .. tostring(rtnval) .. " and handle2" .. tostring(handle) .. " and soundStoped2 " .. tostring(soundStoped))
 		print("The quest " .. questId .. " has yet to be implimented" )
 	end
 end
@@ -129,8 +127,7 @@ end
 function QuestHerald:playWholeQuest(questId)
 	soundStoped = false
 	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .."_Description.mp3")
-	print("zoneName " .. zoneName)
-	print("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .."_Description.mp3")
+	
 	if soundStoped ~= true then 
 		if rtnval ~= nil then
 			self:ScheduleTimer("playSoundObjective", questTable[questId .."_Description.mp3"], questId)
