@@ -138,8 +138,11 @@ function QuestHerald:playWholeQuest(questId)
 end
 
 function QuestHerald:playSounds(questId, playObjective, playDescription)
-	 zoneName = GetZoneText();
+	-- GetZoneText gets specifics like Lion's Pride Inn or StormWind
+	-- GetRealZoneText Gets the actual Zone text like Elwynn Forest
+	 zoneName = GetRealZoneText()
 	 zoneName = zoneName:gsub("%s+", "")
+	 
 	 if playObjective == true and playDescription == true then
 		 self:playWholeQuest(questId)
 	 else
@@ -153,7 +156,7 @@ function QuestHerald:playSounds(questId, playObjective, playDescription)
 end
 
 function QuestHerald:playTurnInSound(questId)
-	zoneName = GetZoneText();
+	zoneName = GetRealZoneText();
 	zoneName = zoneName:gsub("%s+", "")
 	soundStoped = false
 	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .."_TurnIn.mp3")
