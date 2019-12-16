@@ -109,6 +109,8 @@ end
 -- Used when a quest is in progress and has progress text
 function QuestHerald:QUEST_PROGRESS()
 	soundStoped = false
+	rtnval = nil
+	
 	questId = GetQuestID()
 	if questId ~= nil then
 		rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .. "_Progress.mp3")
@@ -125,6 +127,7 @@ end
 
 function QuestHerald:playSoundObjective(questId)
 	soundStoped = false
+	rtnval = nil
 	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .. "_Objective.mp3")
 
 	if rtnval == nil and soundStoped ~= true then
@@ -144,6 +147,8 @@ end
 
 function QuestHerald:playWholeQuest(questId)
 	soundStoped = false
+	rtnval = nil
+	
 	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .."_Description.mp3")
 	
 	if soundStoped ~= true then 
@@ -157,6 +162,7 @@ end
 
 function QuestHerald:playSounds(questId, playObjective, playDescription, playTitle)
 	soundStoped = false
+	rtnval = nil
 
 	if playTitle == true then
 		rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .."_Title.mp3")
@@ -194,6 +200,7 @@ end
 
 function QuestHerald:playTurnInSound(questId)
 	soundStoped = false
+	rtnval = nil
 	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .."_Completion.mp3")
 	
 	if rtnval == nil and soundStoped ~= true then
@@ -306,14 +313,14 @@ function QuestHerald:QuestHeraldShowGui(input)
     end)
 	frame:AddChild(descriptionCheckBox)
 	
-	local descriptionCheckBox = AceGUI:Create("CheckBox")
-    descriptionCheckBox:SetLabel("Play Title")
-	descriptionCheckBox:SetDescription("True to listen to the quest Title text")
-    descriptionCheckBox:SetValue(checkPTitle)
-	descriptionCheckBox:SetCallback("OnValueChanged",function()
+	local titleCheckBox = AceGUI:Create("CheckBox")
+    titleCheckBox:SetLabel("Play Title")
+	titleCheckBox:SetDescription("True to listen to the quest Title text")
+    titleCheckBox:SetValue(checkPTitle)
+	titleCheckBox:SetCallback("OnValueChanged",function()
         --frame:SetValue(not frame:GetValue())
 		QuestHerald:QuestHeraldtoggleTit()
     end)
-	frame:AddChild(descriptionCheckBox)
+	frame:AddChild(titleCheckBox)
 end
 
