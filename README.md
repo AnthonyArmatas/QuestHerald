@@ -10,6 +10,9 @@ Opens Gui To allow users to toggle objective and descriptions audio
 \QuestHerald
 \qh
 
+Toggles Title audio on and off
+\toggleTitle
+
 Toggles objective audio on and off
 \toggleObjective
 
@@ -17,6 +20,11 @@ Toggles description audio on and off
 \toggleDescription
 
 
+Enables the title audio
+\enableTitle
+
+Disables the title audio
+\disableTitle
 
 Enables the objective audio
 \enableObjective
@@ -29,3 +37,8 @@ Enables the objective audio
 
 Disables the objective audio
 \disableDescription
+
+Stop any sound currently playing and any queued up to play
+\sqh
+\stop
+\ss

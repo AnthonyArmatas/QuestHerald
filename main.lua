@@ -4,7 +4,7 @@ print("You are using QuestHerald! type \\QuestHerald or \\qh to enable or disabl
 QuestHerald = LibStub("AceAddon-3.0"):NewAddon("QuestHerald", "AceConsole-3.0", "AceTimer-3.0", "AceEvent-3.0")
 
 -- Returned API variables 
-local rtnval, handle, zoneName
+local rtnval, handle
 
 -- Initializes the GUI and sets it to a variable
 local AceGUI = LibStub("AceGUI-3.0")
@@ -12,6 +12,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 -- Bools which determine which sounds will play
 local checkPlayObjective = true
 local checkPDescription = true
+local checkPTitle = true
 
 -- Bool to make sure stop sound does not cause a message to be printed.
 local soundStoped = false
@@ -23,10 +24,16 @@ function QuestHerald:OnInitialize()
     QuestHerald:RegisterChatCommand("qh", "QuestHeraldShowGui")
     QuestHerald:RegisterChatCommand("toggleDescription", "QuestHeraldtoggleDes")
     QuestHerald:RegisterChatCommand("toggleObjective", "QuestHeraldtoggleObj")
+    QuestHerald:RegisterChatCommand("toggleTitle", "QuestHeraldtoggleTit")
     QuestHerald:RegisterChatCommand("enableObjective", "EnableObj")
     QuestHerald:RegisterChatCommand("disableObjective", "DisableObj")
     QuestHerald:RegisterChatCommand("enableDescription", "EnableDes")
     QuestHerald:RegisterChatCommand("disableDescription", "DisableDes")
+    QuestHerald:RegisterChatCommand("enableTitle", "EnableTit")
+    QuestHerald:RegisterChatCommand("disableTitle", "DisableTit")	
+    QuestHerald:RegisterChatCommand("\sqh", "StopSounds")	
+    QuestHerald:RegisterChatCommand("\stop", "StopSounds")	
+    QuestHerald:RegisterChatCommand("\ss", "StopSounds")	
 end
 
 function QuestHerald:OnEnable()
@@ -36,7 +43,7 @@ function QuestHerald:OnEnable()
 	QuestHerald:RegisterEvent("QUEST_DETAIL")
 	QuestHerald:RegisterEvent("QUEST_FINISHED")
 	QuestHerald:RegisterEvent("UNIT_QUEST_LOG_CHANGED")
-	-- QuestHerald:RegisterEvent("QUEST_PROGRESS")
+	QuestHerald:RegisterEvent("QUEST_PROGRESS")
 	QuestHerald:RegisterEvent("QUEST_COMPLETE")
 	QuestHerald:RegisterEvent("QUEST_TURNED_IN")
 	--self:Print("Goodbye World!")
@@ -46,7 +53,7 @@ function QuestHerald:OnEnable()
 
 function QuestHerald:QUEST_DETAIL(event)
    questInfo = GetQuestID()
-   self:playSounds(questInfo, checkPlayObjective, checkPDescription)
+   self:playSounds(questInfo, checkPlayObjective, checkPDescription, checkPTitle)
 end
 
 
@@ -72,12 +79,6 @@ function QuestHerald:QUEST_COMPLETE(event)
    self:playTurnInSound(questInfo)
 
 end
-
--- -- The words spoken in the progress between accepted and turning in a quest 
--- function QuestHerald:QUEST_PROGRESS(event)
-   -- -- TODO: Implement functionality and add voice acting to this part eventually.
-   -- -- print("Hit QUEST_PROGRESS")
--- end
 
 -- Used when a quest is closed or accepted
 -- stops the current mp3 playing and cancells the 
@@ -105,61 +106,95 @@ function QuestHerald:UNIT_QUEST_LOG_CHANGED()
 	self:CancelAllTimers()
 end
 
-function QuestHerald:playSoundObjective(questId)
+-- Used when a quest is in progress and has progress text
+function QuestHerald:QUEST_PROGRESS()
 	soundStoped = false
-	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .. "_Objective.mp3")
+	questId = GetQuestID()
+	if questId ~= nil then
+		rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .. "_Progress.mp3")
+	else
+		print("The questID could not be retrived when checking QUEST_PROGRESS " )
+	end
 
 	if rtnval == nil and soundStoped ~= true then
-		print("The quest " .. questId .. " has yet to be implimented" )
+		print("The quest Progress " .. questId .. " has yet to be implimented or does not exist." )
+	end
+end
+
+
+
+function QuestHerald:playSoundObjective(questId)
+	soundStoped = false
+	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .. "_Objective.mp3")
+
+	if rtnval == nil and soundStoped ~= true then
+		print("The quest Objective " .. questId .. " has yet to be implimented" )
 	end
 end
 
 
 function QuestHerald:playSoundDescription(questId)
 	soundStoped = false
-	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .."_Description.mp3")
+	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .."_Description.mp3")
 
 	if rtnval == nil and soundStoped ~= true  then
-		print("The quest " .. questId .. " has yet to be implimented" )
+		print("The quest Description " .. questId .. " has yet to be implimented" )
 	end
 end
 
 function QuestHerald:playWholeQuest(questId)
 	soundStoped = false
-	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .."_Description.mp3")
+	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .."_Description.mp3")
 	
 	if soundStoped ~= true then 
 		if rtnval ~= nil then
-			self:ScheduleTimer("playSoundObjective", questTable[questId .."_Description.mp3"], questId)
+			self:ScheduleTimer("playSoundObjective", questDescriptionTable[questId .."_Description.mp3"], questId)
 		else
-			print("The quest " .. questId .. " has yet to be implimented" )
+			print("The quest Description " .. questId .. " has yet to be implimented" )
 		end
 	end
 end
 
-function QuestHerald:playSounds(questId, playObjective, playDescription)
-	-- GetZoneText gets specifics like Lion's Pride Inn or StormWind
-	-- GetRealZoneText Gets the actual Zone text like Elwynn Forest
-	 zoneName = GetRealZoneText()
-	 zoneName = zoneName:gsub("%s+", "")
-	 
-	 if playObjective == true and playDescription == true then
-		 self:playWholeQuest(questId)
-	 else
-		 if playObjective == true then
-			 self:playSoundObjective(questId)
-		 end
-		 if playDescription == true then
-			 self:playSoundDescription(questId)
-		 end
-	 end
+function QuestHerald:playSounds(questId, playObjective, playDescription, playTitle)
+	soundStoped = false
+
+	if playTitle == true then
+		rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .."_Title.mp3")
+		if soundStoped ~= true then
+			if rtnval ~= nil then
+				if playObjective == true and playDescription == true then
+					self:ScheduleTimer("playWholeQuest", questTitleTable[questId .."_Title.mp3"], questId)
+				else
+					if playObjective == true then
+						self:ScheduleTimer("playSoundObjective", questTitleTable[questId .."_Title.mp3"], questId)
+					end
+					if playDescription == true then
+						self:ScheduleTimer("playSoundDescription", questTitleTable[questId .."_Title.mp3"], questId)
+					end
+				end
+				
+			else
+				print("The quest " .. questId .. " has yet to be implimented" )
+			end
+		end
+	
+	else
+		if playObjective == true and playDescription == true then
+			self:playWholeQuest(questId)
+		else
+			if playObjective == true then
+				 self:playSoundObjective(questId)
+			end
+			if playDescription == true then
+				 self:playSoundDescription(questId)
+			end
+		end
+	end
 end
 
 function QuestHerald:playTurnInSound(questId)
-	zoneName = GetRealZoneText();
-	zoneName = zoneName:gsub("%s+", "")
 	soundStoped = false
-	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. zoneName .. "/" .. questId .."_TurnIn.mp3")
+	rtnval, handle = PlaySoundFile("Interface/AddOns/QuestHerald/QuestAudio/" .. questId .."_Completion.mp3")
 	
 	if rtnval == nil and soundStoped ~= true then
 		print('The quest ' .. questId .. " has yet to be implimented" )
@@ -190,6 +225,10 @@ function QuestHerald:QuestHeraldtoggleDes(input)
 	print("Description changed to " .. tostring(checkPDescription))
 end
 
+function QuestHerald:QuestHeraldtoggleTit(input)
+	checkPTitle = not checkPTitle
+	print("Title changed to " .. tostring(checkPTitle))
+end
 
 function QuestHerald:EnableObj(input)
 	checkPlayObjective = true
@@ -201,7 +240,6 @@ function QuestHerald:DisableObj(input)
 	checkPlayObjective = false
 	print("Playing Objective is set to" .. tostring(checkPlayObjective))
 end
-
 
 
 function QuestHerald:EnableDes(input)
@@ -216,6 +254,23 @@ function QuestHerald:DisableDes(input)
 end
 
 
+function QuestHerald:EnableTit(input)
+	checkPTitle = true
+	print("Playing Title is set to" .. tostring(checkPTitle))
+end
+
+
+function QuestHerald:DisableTit(input)
+	checkPTitle = false
+	print("Playing Title is set to" .. tostring(checkPTitle))
+end
+
+function QuestHerald:StopSounds()
+	soundStoped = true
+	self:CancelAllTimers()
+	print("Sounds Stoped")
+end
+
 ---------------------------------------------------------------------
 -- Gui Set up
 ---------------------------------------------------------------------
@@ -226,7 +281,7 @@ function QuestHerald:QuestHeraldShowGui(input)
 	frame:SetTitle("Example Frame")
 	frame:SetStatusText("QuestHerald - Quest Reader")
 	frame:SetWidth(350)
-	frame:SetHeight(200)
+	frame:SetHeight(250)
 	frame:SetCallback("OnClose", function(widget) AceGUI:Release(widget) end)
 	frame:SetLayout("Flow")
 	
@@ -248,6 +303,16 @@ function QuestHerald:QuestHeraldShowGui(input)
 	descriptionCheckBox:SetCallback("OnValueChanged",function()
         --frame:SetValue(not frame:GetValue())
 		QuestHerald:QuestHeraldtoggleDes()
+    end)
+	frame:AddChild(descriptionCheckBox)
+	
+	local descriptionCheckBox = AceGUI:Create("CheckBox")
+    descriptionCheckBox:SetLabel("Play Title")
+	descriptionCheckBox:SetDescription("True to listen to the quest Title text")
+    descriptionCheckBox:SetValue(checkPTitle)
+	descriptionCheckBox:SetCallback("OnValueChanged",function()
+        --frame:SetValue(not frame:GetValue())
+		QuestHerald:QuestHeraldtoggleTit()
     end)
 	frame:AddChild(descriptionCheckBox)
 end
